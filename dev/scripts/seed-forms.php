@@ -1,12 +1,20 @@
 <?php
 /**
  * Creates the test forms, feeds and page used for end-to-end testing.
- * Run with: wp eval-file wp-content/plugins/orbit-gravity-forms/dev/scripts/seed-forms.php <connection-id>
+ * Run with: wp eval-file wp-content/plugins/orbit-gravity-forms/dev/scripts/seed-forms.php \
+ *   <connection-id> <form-type-id> <pipeline-form-type-id> [source-id]
+ *
+ * The first form type needs a text field in slot Text1; the pipeline one a money
+ * field in Money1 and a date field in DateTime1 (see the account's form types
+ * in a feed's settings).
  *
  * @package Orbit\GravityForms
  */
 
-$connection = $args[0] ?? '';
+$connection        = $args[0] ?? '';
+$form_type_id      = $args[1] ?? '';
+$pipeline_type_id  = $args[2] ?? '';
+$source_id         = $args[3] ?? '';
 
 $enquiry_id = GFAPI::add_form(
 	array(
@@ -26,7 +34,7 @@ GFAPI::add_feed(
 	array(
 		'feedName'                  => 'Enquiry to Orbit',
 		'connection'                => $connection,
-		'formTypeId'                => '10283',
+		'formTypeId'                => $form_type_id,
 		'contactMap_email'          => '2',
 		'contactMap_firstName'      => '1.3',
 		'contactMap_lastName'       => '1.6',
@@ -35,7 +43,7 @@ GFAPI::add_feed(
 		'emailSubscribeField'       => '6',
 		'tidyNames'                 => '1',
 		'formFields'                => array( array( 'key' => 'Text1', 'custom_key' => '', 'value' => '5', 'custom_value' => '' ) ),
-		'sourceId'                  => '4477',
+		'sourceId'                  => $source_id,
 	),
 	'orbit-gf'
 );
@@ -57,7 +65,7 @@ GFAPI::add_feed(
 	array(
 		'feedName'             => 'Quote to Orbit pipeline',
 		'connection'           => $connection,
-		'formTypeId'           => '11997',
+		'formTypeId'           => $pipeline_type_id,
 		'contactMap_email'     => '2',
 		'contactMap_firstName' => '1',
 		'emailSubscribeField'  => '5',
@@ -73,8 +81,8 @@ GFAPI::add_feed(
 $legacy_id = GFAPI::add_form(
 	array(
 		'title'    => 'Legacy KulaHub form',
-		'formid'   => '10283',
-		'clientid' => '1141',
+		'formid'   => $form_type_id,
+		'clientid' => '1',
 		'fields'   => array(
 			array( 'id' => 1, 'type' => 'text', 'label' => 'First name', 'encryptField' => 'firstname' ),
 			array( 'id' => 2, 'type' => 'email', 'label' => 'Email', 'encryptField' => 'email' ),

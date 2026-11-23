@@ -4,7 +4,7 @@ Sends [Gravity Forms](https://www.gravityforms.com/) entries to Orbit CRM as for
 
 ## Quick start
 
-1. Install the plugin from the latest release's `orbit-gravity-forms.zip` (Plugins, Add New, Upload Plugin) and activate it. Gravity Forms 2.5 or later must already be active.
+1. Download `orbit-gravity-forms.zip` from the [latest release](https://github.com/Converta-Agency/wpplugin-orbit-gravity-forms/releases/latest), install it (Plugins, Add New, Upload Plugin) and activate it. Gravity Forms 2.5 or later must already be active.
 2. In Orbit, open the account menu (top right), choose **Access and API keys** and click **New key**. Copy the key.
 3. In WordPress, go to **Forms, Orbit accounts**, add the account with the key and check it says "Orbit accepted the key".
 4. Open a form, then **Settings, Orbit**, and click **Add New**. Choose the account and Orbit form type, map the contact fields (email is required) and the form type's fields, and save.
@@ -64,7 +64,7 @@ Orbit attaches each form to the contact with the same email address, or creates 
 ### Sending and retries
 
 - Entries are sent in a background request after the visitor's confirmation page has loaded, so Orbit's response time never slows the form.
-- On success the entry gets a note ("Sent to Orbit as form 2370975 for contact 9214748") and stores the Orbit form and contact IDs.
+- On success the entry gets a note ("Sent to Orbit as form 1234 for contact 5678") and stores the Orbit form and contact IDs.
 - Temporary failures (Orbit unreachable, rate limited or erroring) are retried automatically after 5 minutes, 30 minutes, 2 hours, 6 hours and 24 hours.
 - Failures that sending again cannot fix (a refused or removed key, a missing form type, data Orbit rejects) are not retried; they wait for someone to fix the cause.
 - Every failure adds an error note to the entry with Orbit's reason in plain words, read from Orbit's validation messages.
@@ -113,7 +113,7 @@ Debug and error logs go to the Gravity Forms logging add-on (**Forms, Settings, 
 
 ### Updates
 
-New releases of this repository appear under **Plugins** like any other update, with release notes under **View details**. As the repository is private, the site needs `ORBIT_GF_GITHUB_TOKEN` (see below); without it the plugin works but does not see updates. Release checks are cached for six hours.
+New releases of this repository appear under **Plugins** like any other update, with release notes under **View details**. No token is needed. Release checks are cached for six hours.
 
 ### Privacy and removal
 
@@ -136,7 +136,7 @@ Set in `wp-config.php` when needed:
 
 | Constant | Purpose |
 | --- | --- |
-| `ORBIT_GF_GITHUB_TOKEN` | Fine-grained GitHub token with read access to this repository's contents. Needed for update notifications, as the repository is private |
+| `ORBIT_GF_GITHUB_TOKEN` | Optional fine-grained GitHub token (read-only access to this repository's contents). Lifts GitHub's limit of 60 update checks an hour per IP address, which a busy shared host can reach |
 | `ORBIT_GF_ENCRYPTION_KEY` | Secret used to encrypt stored API keys. Defaults to the site's auth salt; set it if salts are rotated, or stored keys must be entered again |
 | `ORBIT_GF_API_URL` | Orbit API address. Defaults to `https://api.orbitcrm.co.uk`; for testing against a local or staging API only |
 | `ORBIT_GF_SSL_VERIFY` | Set to `false` only for a local API with a development certificate |

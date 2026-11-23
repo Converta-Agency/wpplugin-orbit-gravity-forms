@@ -14,12 +14,14 @@ defined( 'ABSPATH' ) || exit;
 /**
  * Reads the latest release of the plugin's GitHub repository.
  *
- * The repository is private, so a site needs a fine-grained GitHub token with
- * read access to its contents, defined in wp-config.php:
+ * The repository is public, so no token is needed. A site may still define a
+ * fine-grained GitHub token in wp-config.php, which lifts GitHub's limit of 60
+ * unauthenticated requests an hour per IP address (a shared host can hit it)
+ * and keeps updates working if the repository is ever made private:
  *
  *     define( 'ORBIT_GF_GITHUB_TOKEN', 'github_pat_...' );
  *
- * Without it the site still works; it just does not see updates. Each release
+ * Each release
  * carries an orbit-gravity-forms.zip asset built by the release workflow, whose
  * top folder is already named orbit-gravity-forms, so no folder renaming is needed.
  */
@@ -173,7 +175,11 @@ final class Updater {
 				$package = '';
 				foreach ( (array) ( $body['assets'] ?? array() ) as $asset ) {
 					if ( self::ASSET_NAME === ( $asset['name'] ?? '' ) ) {
-						$package = (string) $asset['url'];
+						// With a token, the API URL (which authorise_download() signs) also works
+						// for a private repository; without one, the public download URL is used.
+						$package = '' !== self::token()
+							? (string) ( $asset['url'] ?? '' )
+							: (string) ( $asset['browser_download_url'] ?? '' );
 					}
 				}
 				if ( '' !== $package ) {

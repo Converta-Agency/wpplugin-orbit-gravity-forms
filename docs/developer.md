@@ -87,7 +87,7 @@ wpd plugin activate orbit-gravity-forms
 
 Apache also listens on 8090 inside the container (`dev/listen-8090.conf`), because Gravity Forms sends feeds through a background request to the site's own URL.
 
-`dev/scripts/seed-forms.php <connection-id>` creates three test forms with feeds (a contact form, a pipeline form with money and date fields, and a form set up the KulaHub plugin's way), and a page showing them. `dev/scripts/orbit-get.php /api/Forms/<id>` reads a result back from Orbit with the stored key.
+`dev/scripts/seed-forms.php <connection-id> <form-type-id> <pipeline-form-type-id> [source-id]` creates three test forms with feeds (a contact form, a pipeline form with money and date fields, and a form set up the KulaHub plugin's way), and a page showing them. `dev/scripts/orbit-get.php /api/Forms/<id>` reads a result back from Orbit with the stored key.
 
 Orbit's local API uses the production database, so anything submitted creates real records. Use a test account, addresses at `@<something>.test` (a reserved domain that never delivers mail; Gravity Forms refuses `example.com`), and remove what you create.
 
@@ -104,4 +104,13 @@ Unit tests cover the pure mapping, conversion, encryption, error and import logi
 
 1. Update the version in `orbit-gravity-forms.php` (header and `ORBIT_GF_VERSION`), `readme.txt` (`Stable tag` and changelog) and `CHANGELOG.md`.
 2. Commit, then tag: `git tag v1.0.1 && git push --tags`.
-3. The release workflow builds `orbit-gravity-forms.zip` (top folder `orbit-gravity-forms/`, no dev files) and attaches it to a GitHub release. Sites with `ORBIT_GF_GITHUB_TOKEN` see the update within six hours.
+3. The release workflow builds `orbit-gravity-forms.zip` (top folder `orbit-gravity-forms/`, no dev files) and attaches it to a GitHub release. Sites see the update within six hours (the release check is cached).
+
+If GitHub Actions is unavailable, build the same zip by hand and publish it:
+
+```bash
+rm -rf build && mkdir build
+git archive --format=tar --prefix=orbit-gravity-forms/ HEAD | tar -x -C build
+(cd build && zip -qr ../orbit-gravity-forms.zip orbit-gravity-forms)
+gh release create v1.0.1 orbit-gravity-forms.zip --title "Version 1.0.1" --notes-file CHANGELOG.md
+```

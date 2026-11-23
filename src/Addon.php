@@ -314,6 +314,15 @@ class Addon extends GFFeedAddOn {
 	}
 
 	/**
+	 * Allow a feed to be copied, for example to set up a similar form quickly.
+	 *
+	 * @param int|array $id Feed ID or feed.
+	 */
+	public function can_duplicate_feed( $id ) {
+		return true;
+	}
+
+	/**
 	 * Feeds can only be created once an account is added.
 	 */
 	public function can_create_feed() {
